@@ -27,7 +27,7 @@ public class Note {
     @Column(nullable = false)
     private Date date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }
