@@ -2,6 +2,13 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE users (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    username VARCHAR(20) NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL
 );
+
+ALTER TABLE users
+ADD COLUMN role TEXT;
+
+ALTER TABLE users
+ALTER COLUMN username SET DATA TYPE TEXT USING username::TEXT;
+
