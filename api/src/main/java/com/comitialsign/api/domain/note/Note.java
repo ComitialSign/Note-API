@@ -7,13 +7,13 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
-@Table(name = "note")
+@Entity(name = "notes")
+@Table(name = "notes")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 public class Note {
 
     @Id
