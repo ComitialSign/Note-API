@@ -13,11 +13,7 @@ import java.util.UUID;
 
 @Entity(name = "users")
 @Table(name = "users")
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(of = "id")
+@Data
 public class User implements UserDetails {
 
     @Id
@@ -33,12 +29,17 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Note> notes;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User(String username, String password, UserRole role) {
+    public User() {
+
+    }
+
+    public User(String username, String encryptedPassword, UserRole userRole) {
         this.username = username;
-        this.password = password;
-        this.role = role;
+        this.password = encryptedPassword;
+        this.role = userRole;
     }
 
     @Override
