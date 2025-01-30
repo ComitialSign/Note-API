@@ -3,7 +3,9 @@ package com.comitialsign.api.controller;
 import com.comitialsign.api.domain.user.User;
 import com.comitialsign.api.domain.user.UserRole;
 import com.comitialsign.api.dtos.user.AuthenticationDTO;
+import com.comitialsign.api.dtos.user.LoginResponseDTO;
 import com.comitialsign.api.dtos.user.RegisterDTO;
+import com.comitialsign.api.infra.security.TokenService;
 import com.comitialsign.api.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +26,24 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        return ResponseEntity.ok().build();
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
+
 
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody @Valid RegisterDTO data) {
         if(this.userRepository.findByUsername(data.username()) != null) return ResponseEntity.badRequest().build();
 
-        String encryptedPassword = passwordEncoder.encode(data.password());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(data.username(), encryptedPassword, UserRole.USER);
 
         this.userRepository.save(newUser);
