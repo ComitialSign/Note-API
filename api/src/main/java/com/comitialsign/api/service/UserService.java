@@ -14,8 +14,5 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User findUserById(UUID id) {
-        return this.userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
-    }
+
 }

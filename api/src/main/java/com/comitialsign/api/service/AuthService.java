@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,21 +24,20 @@ public class AuthService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    TokenService tokenService;
 
-    public String login(LoginDTO data) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
-        return tokenService.generateToken((User) auth.getPrincipal());
+    public Authentication login(LoginDTO data) {
+        if(data.username().isEmpty() || data.username().isBlank() ||
+        data.password().isEmpty() || data.password().isBlank()) {
+            throw new IllegalArgumentException("Nome e senha são obrigatórios");
+        }
+
+        return new UsernamePasswordAuthenticationToken(data.username(), data.password());
     }
 
     public void signUp(RegisterRequestDTO data) {
         if(loadUserByUsername(data.username()) != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username já em uso.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome do usuário esta já em uso.");
         }
 
         validatedUsername(data.username());
