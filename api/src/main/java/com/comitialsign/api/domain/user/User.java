@@ -1,11 +1,13 @@
 package com.comitialsign.api.domain.user;
 
 import com.comitialsign.api.domain.note.Note;
+import com.comitialsign.api.dtos.user.LoginDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.List;
