@@ -8,6 +8,7 @@ import com.comitialsign.api.dtos.user.RegisterRequestDTO;
 import com.comitialsign.api.infra.security.TokenService;
 import com.comitialsign.api.repository.UserRepository;
 import jakarta.validation.Valid;
+import jdk.jfr.Description;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
+@Description("Auth user")
+@Transactional
 public class AuthController {
 
     @Autowired
@@ -39,12 +42,11 @@ public class AuthController {
            String token = tokenService.generateToken((User)auth.getPrincipal());
            return ResponseEntity.ok(new LoginResponseDTO(token));
        }
-       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nome de usuário ou senha incorreto.");
     }
 
 
     @PostMapping("/signup")
-    @Transactional
     public ResponseEntity<Void> signup(@RequestBody @Valid RegisterRequestDTO data) {
         if (this.userRepository.findByUsername(data.username()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome do usuário esta já em uso.");
