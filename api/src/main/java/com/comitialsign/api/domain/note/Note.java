@@ -3,11 +3,11 @@ package com.comitialsign.api.domain.note;
 import com.comitialsign.api.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "notes")
@@ -25,13 +25,13 @@ public class Note {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(updatable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -39,10 +39,35 @@ public class Note {
 
     public Note() {}
 
-    public Note(String title, String content) {
+    public Note(String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, User user) {
         this.title = title;
         this.content = content;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.user = user;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
